@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define MAX_TOKENS 100
+#define MAX_TEMP_VARS 100
+
+typedef struct {
+    char token[20];
+    int type; // 0: identifier, 1: operator, 2: constant
+} Token;
+
+typedef struct {
+    char temp_var[20];
+    char op[20];
+    char arg1[20];
+    char arg2[20];
+} ThreeAddressCode;
+
+Token tokens[MAX_TOKENS];
+ThreeAddressCode tac[MAX_TEMP_VARS];
+int token_count = 0;
+int tac_count = 0;
+
+void tokenize(char *input) {
+    char *token = strtok(input, " ");
+    while (token!= NULL) {
+        strcpy(tokens[token_count].token, token);
+        if (strcmp(token, "+") == 0 || strcmp(token, "-") == 0 ||
+            strcmp(token, "*") == 0 || strcmp(token, "/") == 0) {
+            tokens[token_count].type = 1; // operator
+        } else if (isdigit(token[0])) {
+            tokens[token_count].type = 2; // constant
+        } else {
+            tokens[token_count].type = 0; // identifier
+        }
+        token_count++;
+        token = strtok(NULL, " ");
+    }
+}
+
+void generate_tac() {
+    int i;
+    for (i = 0; i < token_count; i++) {
+        if (tokens[i].type == 1) { // operator
+            char temp_var[20];
+            sprintf(temp_var, "t%d", tac_count);
+            strcpy(tac[tac_count].temp_var, temp_var);
+            strcpy(tac[tac_count].op, tokens[i].token);
+            if (i > 0) {
+                strcpy(tac[tac_count].arg1, tokens[i-1].token);
+            } else {
+                strcpy(tac[tac_count].arg1, "error"); // handle error case
+            }
+            if (i < token_count - 1) {
+                strcpy(tac[tac_count].arg2, tokens[i+1].token);
+            } else {
+                strcpy(tac[tac_count].arg2, "error"); // handle error case
+            }
+            tac_count++;
+        }
+    }
+}
+
+void print_tac() {
+    int i;
+    for (i = 0; i < tac_count; i++) {
+        printf("%s = %s %s %s\n", tac[i].temp_var, tac[i].arg1, tac[i].op, tac[i].arg2);
+    }
+}
+
+int main() {
+    char input[100];
+    printf("Enter an expression: ");
+    fgets(input, 100, stdin);
+    input[strlen(input)-1] = '\0'; 
+    tokenize(input);
+    generate_tac();
+    print_tac();
+    return 0;
+}
