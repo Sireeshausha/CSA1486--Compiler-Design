@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+typedef struct {
+    char name[20];
+    int value;
+} Symbol;
+typedef struct {
+    char opcode[10];
+    char operand1[20];
+    char operand2[20];
+} Instruction;
+Symbol symbol_table[10];
+int symbol_table_index = 0;
+Instruction instruction_list[10];
+int instruction_list_index = 0;
+void add_symbol(char *name, int value) {
+    strcpy(symbol_table[symbol_table_index].name, name);
+    symbol_table[symbol_table_index].value = value;
+    symbol_table_index++;
+}
+void generate_code(char *opcode, char *operand1, char *operand2) {
+    strcpy(instruction_list[instruction_list_index].opcode, opcode);
+    strcpy(instruction_list[instruction_list_index].operand1, operand1);
+    strcpy(instruction_list[instruction_list_index].operand2, operand2);
+    instruction_list_index++;
+}
+void print_symbol_table() {
+    printf("Symbol Table:\n");
+    int i;
+    for ( i = 0; i < symbol_table_index; i++) {
+        printf("%s = %d\n", symbol_table[i].name, symbol_table[i].value);
+    }
+}
+void print_instruction_list() {
+    printf("Instruction List:\n");
+    int i;
+    for (i = 0; i < instruction_list_index; i++) {
+        printf("%s %s %s\n", instruction_list[i].opcode, instruction_list[i].operand1, instruction_list[i].operand2);
+    }
+}
+
+int main() {
+    add_symbol("x", 10);
+    add_symbol("y", 20);
+    generate_code("MOV", "A", "x");
+    generate_code("ADD", "A", "y");
+    generate_code("STORE", "A", "z");
+    print_symbol_table();
+    print_instruction_list();
+
+    return 0;
+}
