@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <string.h>
+
+void eliminate_left_recursion(char *rule) {
+    char lhs[10], rhs[100];
+    sscanf(rule, "%s -> %s", lhs, rhs);
+
+    if (strstr(rhs, lhs) == rhs) {
+        printf("%s -> %s'\n", lhs, rhs + strlen(lhs));
+        printf("%s' -> %s%s' | e\n", lhs, rhs + strlen(lhs), lhs);
+    } else {
+        printf("%s\n", rule);
+    }
+}
+
+int main() {
+    char rule[100];
+
+    printf("Enter a rule: ");
+    fgets(rule, 100, stdin);
+
+    rule[strcspn(rule, "\n")] = 0; 
+
+    eliminate_left_recursion(rule);
+
+    return 0;
+}
