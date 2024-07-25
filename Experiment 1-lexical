@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define BUFFER_SIZE 1024
+#define KEYWORD_COUNT 10
+
+char* keywords[] = {"if", "else", "while", "for", "int", "char", "float", "double", "void", "main"};
+
+int isKeyword(char* token) {
+	int i;
+    for ( i = 0; i < KEYWORD_COUNT; i++) {
+        if (strcmp(token, keywords[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int main() {
+    char buffer[BUFFER_SIZE];
+    printf("Enter a string: ");
+    fgets(buffer, BUFFER_SIZE, stdin);
+
+    char token[20];
+    int tokenIndex = 0;
+    int j;
+
+    for (j = 0; j < strlen(buffer); j++) {
+        char c = buffer[j];
+        if (isspace(c)) {
+            // Ignore whitespace
+            if (tokenIndex > 0) {
+                token[tokenIndex] = '\0';
+                if (isKeyword(token)) {
+                    printf("Token: %s, Type: KEYWORD\n", token);
+                } else if (isdigit(token[0])) {
+                    printf("Token: %s, Type: CONSTANT\n", token);
+                } else {
+                    printf("Token: %s, Type: IDENTIFIER\n", token);
+                }
+                tokenIndex = 0;
+            }
+        } else if (isdigit(c)) {
+            token[tokenIndex++] = c;
+        } else if (isalpha(c)) {
+            token[tokenIndex++] = c;
+        } else {
+            if (tokenIndex > 0) {
+                token[tokenIndex] = '\0';
+                if (isKeyword(token)) {
+                    printf("Token: %s, Type: KEYWORD\n", token);
+                } else if (isdigit(token[0])) {
+                    printf("Token: %s, Type: CONSTANT\n", token);
+                } else {
+                    printf("Token: %s, Type: IDENTIFIER\n", token);
+                }
+                tokenIndex = 0;
+            }
+            switch (c) {
+                case '=':
+                    printf("Token: =, Type: OPERATOR\n");
+                    break;
+                case '+':
+                    printf("Token: +, Type: OPERATOR\n");
+                    break;
+                case '-':
+                    printf("Token: -, Type: OPERATOR\n");
+                    break;
+                case '*':
+                    printf("Token: *, Type: OPERATOR\n");
+                    break;
+                case '/':
+                    printf("Token: /, Type: OPERATOR\n");
+                    break;
+                case '(':
+                    printf("Token: (, Type: LEFT PARENTHESIS\n");
+                    break;
+                case ')':
+                    printf("Token: ), Type: RIGHT PARENTHESIS\n");
+                    break;
+                case '{':
+                    printf("Token: {, Type: LEFT BRACE\n");
+                    break;
+                case '}':
+                    printf("Token: }, Type: RIGHT BRACE\n");
+                    break;
+                case '"':
+                    printf("Token: \"%, Type: STRING\n");
+                    break;
+                default:
+                    printf("Error: Invalid character '%c'.\n", c);
+                    return 1;
+            }
+        }
+    }
+
+    if (tokenIndex > 0) {
+        token[tokenIndex] = '\0';
+        if (isKeyword(token)) {
+            printf("Token: %s, Type: KEYWORD\n", token);
+        } else if (isdigit(token[0])) {
+            printf("Token: %s, Type: CONSTANT\n", token);
+        } else {
+            printf("Token: %s, Type: IDENTIFIER\n", token);
+        }
+    }
+
+    return 0;
+}
