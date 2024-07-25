@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <string.h>
+
+enum {
+    IDENTIFIER,
+    NUMBER,
+    PLUS,
+    MINUS,
+    TIMES,
+    DIVIDE,
+    LPAREN,
+    RPAREN,
+    EOF_TOKEN
+};
+
+typedef struct {
+    int token;
+    char* lexeme;
+} Token;
+
+Token lexer(char* input) {
+    static int pos = 0;
+    Token token;
+
+    while (input[pos] == ' ' || input[pos] == '\t') {
+        pos++;
+    }
+
+    if (input[pos] == '\0') {
+        token.token = EOF_TOKEN;
+        token.lexeme = "EOF";
+    } else if (input[pos] == '+') {
+        token.token = PLUS;
+        token.lexeme = "+";
+        pos++;
+    } else if (input[pos] == '-') {
+        token.token = MINUS;
+        token.lexeme = "-";
+        pos++;
+    } else if (input[pos] == '*') {
+        token.token = TIMES;
+        token.lexeme = "*";
+        pos++;
+    } else if (input[pos] == '/') {
+        token.token = DIVIDE;
+        token.lexeme = "/";
+        pos++;
+    } else if (input[pos] == '(') {
+        token.token = LPAREN;
+        token.lexeme = "(";
+        pos++;
+    } else if (input[pos] == ')') {
+        token.token = RPAREN;
+        token.lexeme = ")";
+        pos++;
+    } else if (input[pos] >= '0' && input[pos] <= '9') {
+        token.token = NUMBER;
+        token.lexeme = (char*)malloc(10 * sizeof(char));
+        int i = 0;
+        while (input[pos] >= '0' && input[pos] <= '9') {
+            token.lexeme[i++] = input[pos++];
+        }
+        token.lexeme[i] = '\0';
+    } else {
+        token.token = IDENTIFIER;
+        token.lexeme = (char*)malloc(10 * sizeof(char));
+        int i = 0;
+        while (input[pos] != ' ' && input[pos] != '\t' && input[pos] != '\0') {
+            token.lexeme[i++] = input[pos++];
+        }
+        token.lexeme[i] = '\0';
+    }
+
+    return token;
+}
+
+void expr(char* input) {
+    Token token = lexer(input);
+    if (token.token == IDENTIFIER || token.token == NUMBER) {
+        printf("Parsed successfully!\n");
+    } else {
+        printf("Error: expected identifier or number\n");
+    }
+}
+
+int main() {
+    char input[100];
+    printf("Enter an arithmetic expression: ");
+    fgets(input, 100, stdin);
+    input[strlen(input) - 1] = '\0'; // Remove newline character
+
+    expr(input);
+
+    return 0;
+}
