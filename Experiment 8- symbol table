@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_SYMBOLS 100
+#define MAX_LENGTH 20
+
+typedef struct {
+    char symbol[MAX_LENGTH];
+    int address;
+} Symbol;
+
+Symbol symbolTable[MAX_SYMBOLS];
+int symbolCount = 0;
+
+void insertSymbol(char* symbol, int address) {
+    strcpy(symbolTable[symbolCount].symbol, symbol);
+    symbolTable[symbolCount].address = address;
+    symbolCount++;
+}
+
+void displaySymbolTable() {
+    printf("Symbol Table:\n");
+    int i;
+    for (i = 0; i < symbolCount; i++) {
+        printf("%s %d\n", symbolTable[i].symbol, symbolTable[i].address);
+    }
+}
+
+int main() {
+    char symbol[MAX_LENGTH];
+    int address;
+
+    while (1) {
+        printf("Enter symbol: ");
+        scanf("%s", symbol);
+        printf("Enter address: ");
+        scanf("%d", &address);
+        insertSymbol(symbol, address);
+        displaySymbolTable();
+    }
+
+    return 0;
+}
