@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_TOKEN_LENGTH 1024
+
+enum token_type {
+    PLUS,
+    MINUS,
+    MULT,
+    DIV,
+    UNKNOWN
+};
+
+struct token {
+    enum token_type type;
+    char value[MAX_TOKEN_LENGTH];
+};
+
+struct token lex_analyze(char *input) {
+    struct token token;
+
+    if (strstr(input, "+")!= NULL) {
+        token.type = PLUS;
+        strcpy(token.value, "+");
+    } else if (strstr(input, "-")!= NULL) {
+        token.type = MINUS;
+        strcpy(token.value, "-");
+    } else if (strstr(input, "*")!= NULL) {
+        token.type = MULT;
+        strcpy(token.value, "*");
+    } else if (strstr(input, "/")!= NULL) {
+        token.type = DIV;
+        strcpy(token.value, "/");
+    } else {
+        token.type = UNKNOWN;
+        strcpy(token.value, "Unknown operator");
+    }
+
+    return token;
+}
+
+int main() {
+    char input[MAX_TOKEN_LENGTH];
+
+    printf("Enter an operator: ");
+    fgets(input, MAX_TOKEN_LENGTH, stdin);
+
+    input[strcspn(input, "\n")] = 0; // Remove newline character
+
+    struct token token = lex_analyze(input);
+
+    switch (token.type) {
+        case PLUS:
+            printf("Operator: +\n");
+            break;
+        case MINUS:
+            printf("Operator: -\n");
+            break;
+        case MULT:
+            printf("Operator: *\n");
+            break;
+        case DIV:
+            printf("Operator: /\n");
+            break;
+        default:
+            printf("Unknown operator: %s\n", token.value);
+            break;
+    }
+
+    return 0;
+}
