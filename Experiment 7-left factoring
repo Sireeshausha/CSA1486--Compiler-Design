@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <string.h>
+
+void eliminate_left_factoring(char *rule) {
+    char lhs[10], rhs1[50], rhs2[50];
+    sscanf(rule, "%s -> %s | %s", lhs, rhs1, rhs2);
+
+    int i = 0;
+    while (rhs1[i] == rhs2[i]) {
+        i++;
+    }
+
+    char common_prefix[i + 1];
+    strncpy(common_prefix, rhs1, i);
+    common_prefix[i] = '\0';
+
+    printf("%s -> %s%s'\n", lhs, common_prefix, lhs);
+    printf("%s' -> %s | %s\n", lhs, rhs1 + i, rhs2 + i);
+}
+
+int main() {
+    char rule[100];
+
+    printf("Enter a rule: ");
+    fgets(rule, 100, stdin);
+    rule[strlen(rule) - 1] = '\0'; // remove newline character
+
+    eliminate_left_factoring(rule);
+
+    return 0;
+}
